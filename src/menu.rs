@@ -23,7 +23,7 @@ struct ComputeScoreEvent;
 
 /// Restart all the game element
 #[derive(Event, Default)]
-struct RestartGame;
+pub struct RestartGame;
 
 /// Old the previous input to provide a cool down to the enter key
 #[derive(Resource)]
