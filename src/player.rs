@@ -1,7 +1,8 @@
-use bevy::prelude::*;
-
 use std::f32::consts::PI;
 
+use bevy::prelude::*;
+
+use crate::GameState;
 use crate::world::{GRID_SIZE, Corn};
 
 #[derive(Default)]

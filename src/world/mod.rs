@@ -5,6 +5,8 @@
 use bevy::{color::palettes::css::GREEN, prelude::*};
 use rand::Rng; // 0.8.5
 
+pub mod levels;
+
 /// Size of the world and game grid
 pub const WORLD_SIZE: f32 = 20.0;
 pub const GRID_SIZE: f32 = 16.0;
