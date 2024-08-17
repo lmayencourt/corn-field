@@ -53,6 +53,7 @@ fn setup_world(
         ..default()
     });
 
+    // 0 0 marker stone
     commands.spawn(
         PbrBundle {
             mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
@@ -61,6 +62,7 @@ fn setup_world(
             ..default()
         }
     );
+    // x marker stone
     commands.spawn(
         PbrBundle {
             mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
@@ -69,11 +71,21 @@ fn setup_world(
             ..default()
         }
     );
+    // z marker stone
     commands.spawn(
         PbrBundle {
             mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
             material: materials.add(Color::srgb(0.0, 1.0, 0.0)),
             transform: Transform::from_xyz(0.0, 1.0, 2.0),
+            ..default()
+        }
+    );
+    // end of grid stone
+    commands.spawn(
+        PbrBundle {
+            mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
+            material: materials.add(Color::srgb(0.0, 0.0, 1.0)),
+            transform: Transform::from_xyz((GRID_SIZE-1) as f32, 1.0, (GRID_SIZE-1) as f32),
             ..default()
         }
     );

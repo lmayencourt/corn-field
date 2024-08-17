@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use std::f32::consts::PI;
 
+use crate::world::GRID_SIZE;
+
 #[derive(Default)]
 pub struct PlayerPlugin;
 
@@ -41,7 +43,7 @@ fn update_player(
         let mut moved = false;
 
         if keyboard_input.pressed(KeyCode::ArrowUp) {
-            if z < 16.0 - 1.0 {
+            if z < GRID_SIZE as f32 - 1.0 {
                 z += 1.0;
             }
             rotation = -PI / 2.;
@@ -56,15 +58,15 @@ fn update_player(
             moved = true;
         }
 
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
-            if x < 16.0 - 1.0{ 
+        if keyboard_input.pressed(KeyCode::ArrowLeft) {
+            if x < GRID_SIZE as f32 - 1.0 {
                 x += 1.0;
             }
             rotation = PI;
             moved = true;
         }
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
+        if keyboard_input.pressed(KeyCode::ArrowRight) {
             if x > 0.0 {
                 x -= 1.0;
             }
