@@ -19,5 +19,6 @@ fn main() {
         .add_plugins(GameCameraPlugin)
         .add_plugins(WorldPlugin)
         .add_plugins(AudioPlugin)
+        .add_plugins(PlayerPlugin)
         .run();
 }
