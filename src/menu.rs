@@ -100,12 +100,9 @@ fn compute_score(
 
         score.mistakes = 0;
         score.forgotten = 0;
-        let mut correct_pos = 0;
-        let mut number_of_tile_to_clear = 0;
         for x in 0..GRID_SIZE as usize {
             for y in 0..GRID_SIZE as usize {
                 if LEVEL_1[x][y] == 0 {
-                    number_of_tile_to_clear += 1;
                     if field_map[x][y] == 1 {
                         score.forgotten += 1;
                         commands.spawn((PbrBundle {
