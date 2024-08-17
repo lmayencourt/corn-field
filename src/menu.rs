@@ -56,7 +56,7 @@ fn manage_menu(
 {
     match state.get() {
         GameState::LandingScreen => {
-            if keyboard_input.any_pressed([KeyCode::ArrowDown, KeyCode::ArrowUp, KeyCode::ArrowLeft, KeyCode::AltRight]) {
+            if keyboard_input.any_pressed([KeyCode::ArrowDown, KeyCode::ArrowUp, KeyCode::ArrowLeft, KeyCode::ArrowRight]) {
                 next_state.set(GameState::InGame);
             }
         }
