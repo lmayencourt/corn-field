@@ -22,7 +22,6 @@ impl Plugin for PlayerPlugin {
 }
 
 fn update_player(
-    mut commands: Commands,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut transforms: Query<&mut Transform, With<Player>>,
     mut player: Query<&mut Player>,
@@ -107,7 +106,7 @@ fn setup_player(
             ..default()
         },
         Player {
-            move_delay: Timer::from_seconds(0.1,TimerMode::Once),
+            move_delay: Timer::from_seconds(0.18,TimerMode::Once),
         },
     ));
 }
