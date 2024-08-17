@@ -61,6 +61,7 @@ fn move_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut query: Query<(&mut Transform, &mut Player)>,
     time: Res<Time>,
+    state: Res<State<GameState>>,
 ) {
     let (mut tt, mut player) = query.single_mut();
     // Access the x, y, z coordinates
@@ -68,49 +69,50 @@ fn move_player(
     let mut z = tt.translation.z;
 
     let mut rotation: f32 = 0.0;
-    if player.move_delay.tick(time.delta()).finished() {
-        let mut moved = false;
+    if *state.get() != GameState::LandingScreen {
+        if player.move_delay.tick(time.delta()).finished() {
+            let mut moved = false;
 
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
-            if z < GRID_SIZE - 1.0 {
-                z += 1.0;
+            if keyboard_input.pressed(KeyCode::ArrowUp) {
+                if z < GRID_SIZE - 1.0 {
+                    z += 1.0;
+                }
+                rotation = PI;
+                moved = true;
             }
-            rotation = PI;
-            moved = true;
-        }
 
-        if keyboard_input.pressed(KeyCode::ArrowDown) {
-            if z > 0.0 {
-                z -= 1.0;
+            if keyboard_input.pressed(KeyCode::ArrowDown) {
+                if z > 0.0 {
+                    z -= 1.0;
+                }
+                rotation = 0.0;
+                moved = true;
             }
-            rotation = 0.0;
-            moved = true;
-        }
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
-            if x < GRID_SIZE - 1.0 {
-                x += 1.0;
+            if keyboard_input.pressed(KeyCode::ArrowLeft) {
+                if x < GRID_SIZE - 1.0 {
+                    x += 1.0;
+                }
+                rotation = -PI / 2.;
+                moved = true;
             }
-            rotation = -PI / 2.;
-            moved = true;
-        }
 
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
-            if x > 0.0 {
-                x -= 1.0;
+            if keyboard_input.pressed(KeyCode::ArrowRight) {
+                if x > 0.0 {
+                    x -= 1.0;
+                }
+                rotation = PI/2.0;
+                moved = true;
             }
-            rotation = PI/2.0;
-            moved = true;
+
+            if moved {
+                player.move_delay.reset();
+
+                tt.translation.x = x;
+                tt.translation.z = z;
+                tt.rotation = Quat::from_rotation_y(rotation);
+            }
         }
-
-        if moved {
-            player.move_delay.reset();
-
-            tt.translation.x = x;
-            tt.translation.z = z;
-            tt.rotation = Quat::from_rotation_y(rotation);
-        }
-
     }
 }
 
