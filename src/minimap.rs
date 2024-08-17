@@ -51,5 +51,24 @@ fn setup(
                 TextureAtlas::from(texture_atlas_handle),
                 Outline::new(Val::Px(5.0), Val::ZERO, WHITE.into()),
             ));
+            parent.spawn((
+                TextBundle::from_section(
+                    // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.\n> Be precise!\n\nArrows: Move\nSpace: Cut the plants\nEnter: Finish mission",
+                    TextStyle {
+                        color: WHITE.into(),
+                        font_size: 24.0,
+                        ..default()
+                    },
+                ) // Set the justification of the Text
+                .with_text_justify(JustifyText::Left)
+                // Set the style of the TextBundle itself.
+                .with_style(Style {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(5.0),
+                    right: Val::Px(100.0),
+                    ..default()
+                }),
+            ));
         });
 }
