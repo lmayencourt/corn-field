@@ -85,8 +85,6 @@ fn move_player(
             moved = true;
         }
 
-        debug!("Coordinates: x: {},  z: {}", x, z);
-
         if moved {
             player.move_delay.reset();
 

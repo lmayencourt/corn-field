@@ -1,4 +1,4 @@
-use bevy::{color::palettes::css::{ANTIQUE_WHITE, BLACK, CRIMSON, WHITE, YELLOW}, prelude::*};
+use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE}, prelude::*};
 
 
 pub struct MinimapPlugin;

@@ -2,7 +2,8 @@
  * Copyright (c) 2024 Elieva Pignat, Florian Depraz, Louis Mayencourt
  */
 
-use bevy::prelude::*;
+use bevy::{color::palettes::css::GREEN, prelude::*};
+use rand::Rng; // 0.8.5
 
 /// Size of the world and game grid
 pub const WORLD_SIZE: f32 = 20.0;
@@ -29,17 +30,39 @@ fn setup_world(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    // plane
-    commands.spawn((PbrBundle {
-        mesh: meshes.add(Plane3d::default().mesh().size(WORLD_SIZE, WORLD_SIZE)),
-        material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
-        transform: Transform::from_xyz(
-            WORLD_SIZE / 2.0 - (WORLD_SIZE - GRID_SIZE) / 2.0,
-            0.0,
-            WORLD_SIZE / 2.0 - (WORLD_SIZE - GRID_SIZE) / 2.0,
-        ),
-        ..default()
-    },));
+
+    let FLOOR_SIZE = GRID_SIZE + 3.0;
+    // This is the floor of the game, adding 2 tiles of margin
+    for x in -2..FLOOR_SIZE  as isize {
+        for z in -2..FLOOR_SIZE as isize {
+
+            let num = rand::thread_rng().gen_range(0.0..0.10);
+
+            if (x < 0) || (z < 0) || (z > GRID_SIZE as isize)|| (x > GRID_SIZE as isize)
+            {
+                commands.spawn((
+                    PbrBundle {
+                        mesh: meshes.add(Cuboid::new(1.0, 0.2, 1.0)),
+                        material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
+                        transform: Transform::from_xyz(x as f32, -num,  z as f32),
+                        ..default()
+                        },
+                    ));
+            }
+            else
+            {   
+                commands.spawn((
+                    PbrBundle {
+                        mesh: meshes.add(Cuboid::new(1.0, 0.3, 1.0)),
+                        material: materials.add(Color::srgba_u8(53, 33, 0, 255)),
+                        transform: Transform::from_xyz(x as f32, -num,  z as f32),
+                        ..default()
+                        },
+                    ));
+
+            }
+        }
+    }
 
     // light
     commands.spawn(DirectionalLightBundle {
@@ -66,20 +89,7 @@ fn setup_world(
         transform: Transform::from_xyz(0.0, 1.0, 0.0),
         ..default()
     });
-    // x marker stone
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-        material: materials.add(Color::srgb(1.0, 0.0, 0.0)),
-        transform: Transform::from_xyz(1.0, 1.0, 0.0),
-        ..default()
-    });
-    // z marker stone
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-        material: materials.add(Color::srgb(0.0, 1.0, 0.0)),
-        transform: Transform::from_xyz(0.0, 1.0, 2.0),
-        ..default()
-    });
+
     // end of grid stone
     commands.spawn(PbrBundle {
         mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
@@ -88,14 +98,18 @@ fn setup_world(
         ..default()
     });
 
+
     // We need apparently to work on the X - Z plane, Y being the height for us.
     for x in 0..GRID_SIZE as usize {
         for z in 0..GRID_SIZE as usize {
+
+            let num = rand::thread_rng().gen_range(0.50..0.55);
+
             commands.spawn((
                 PbrBundle {
                     mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
                     material: materials.add(YELLOW),
-                    transform: Transform::from_xyz(x as f32, 0.50, z as f32),
+                    transform: Transform::from_xyz(x as f32, num,  z as f32),
                     ..default()
                     },
                 Corn,
