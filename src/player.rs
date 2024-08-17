@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use std::f32::consts::PI;
 
-use crate::world::GRID_SIZE;
+use crate::world::{GRID_SIZE, Corn};
 
 #[derive(Default)]
 pub struct PlayerPlugin;
@@ -15,19 +15,17 @@ pub struct Player {
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_player);
-
         app.add_systems(Update, update_player);
+        app.add_systems(Update, action_cut);
     }
 }
 
 fn update_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut transforms: Query<&mut Transform, With<Player>>,
-    mut player: Query<&mut Player>,
+    mut query: Query<(&mut Transform, &mut Player)>,
     time: Res<Time>,
 ) {
-    let mut tt = transforms.get_single_mut().unwrap();
-    let mut player = player.get_single_mut().unwrap();
+    let (mut tt, mut player) = query.single_mut();
     // Access the x, y, z coordinates
     let mut x = tt.translation.x;
     let mut z = tt.translation.z;
@@ -68,7 +66,7 @@ fn update_player(
             moved = true;
         }
 
-        println!("Coordinates: x: {},  z: {}", x, z);
+        debug!("Coordinates: x: {},  z: {}", x, z);
 
         if moved {
             player.move_delay.reset();
@@ -98,4 +96,22 @@ fn setup_player(
             move_delay: Timer::from_seconds(0.18, TimerMode::Once),
         },
     ));
+}
+
+fn action_cut(
+    mut commands: Commands,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut player: Query<&Transform, With<Player>>,
+    mut corn: Query<(&Transform, Entity), With<Corn>>
+) {
+    let player = player.single();
+    if keyboard_input.pressed(KeyCode::Space) {
+        // If space bar pressed, remove the corn at the position of the player
+        for (corn_position, corn) in corn.iter() {
+            if player.translation.x == corn_position.translation.x &&
+                player.translation.z == corn_position.translation.z {
+                    commands.entity(corn).despawn();
+                }
+        }
+    }
 }

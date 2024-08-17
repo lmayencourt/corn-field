@@ -10,6 +10,10 @@ pub const GRID_SIZE: f32 = 16.0;
 
 pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
 
+/// Component to identify the Corn
+#[derive(Component)]
+pub struct Corn;
+
 /// Plugin to be included in main application
 pub struct WorldPlugin;
 
@@ -87,12 +91,15 @@ fn setup_world(
     // We need apparently to work on the X - Z plane, Y being the height for us.
     for x in 0..GRID_SIZE as usize {
         for z in 0..GRID_SIZE as usize {
-            commands.spawn(PbrBundle {
-                mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-                material: materials.add(YELLOW),
-                transform: Transform::from_xyz(x as f32, 0.50, z as f32),
-                ..default()
-            });
+            commands.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+                    material: materials.add(YELLOW),
+                    transform: Transform::from_xyz(x as f32, 0.50, z as f32),
+                    ..default()
+                    },
+                Corn,
+                ));
         }
     }
 }
