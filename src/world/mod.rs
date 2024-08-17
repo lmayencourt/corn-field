@@ -7,6 +7,8 @@ use std::isize;
 use bevy::prelude::*;
 use rand::Rng; // 0.8.5
 
+use crate::menu::RestartGame;
+
 pub mod levels;
 
 /// Size of the world and game grid
@@ -28,6 +30,7 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_world);
+        app.add_systems(Update, reset_world);
     }
 }
 
@@ -94,6 +97,30 @@ fn setup_world(
         ..default()
     });
 
+    spawn_board(commands, meshes, materials);
+}
+
+fn reset_world(
+    event: EventReader<RestartGame>,
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    corns: Query<Entity, With<Corn>>,
+
+) {
+    if !event.is_empty() {
+        for corn in corns.iter() {
+            commands.entity(corn).despawn();
+        }
+        spawn_board(commands, meshes, materials);
+    }
+}
+
+fn spawn_board(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
     // We need apparently to work on the X - Z plane, Y being the height for us.
     for x in 0..GRID_SIZE as usize {
         for z in 0..GRID_SIZE as usize {
