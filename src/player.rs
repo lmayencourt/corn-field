@@ -22,14 +22,15 @@ impl Plugin for PlayerPlugin {
 
 fn setup_player(
     mut commands: Commands,
+    asset_server: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
-            material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
+        SceneBundle {
+            transform: Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(2.0)),
+            scene: asset_server
+                .load(GltfAssetLabel::Scene(0).from_asset("models/alien.glb")),
             ..default()
         },
         Player {
@@ -56,7 +57,7 @@ fn move_player(
             if z < GRID_SIZE - 1.0 {
                 z += 1.0;
             }
-            rotation = -PI / 2.;
+            rotation = PI;
             moved = true;
         }
 
@@ -64,7 +65,7 @@ fn move_player(
             if z > 0.0 {
                 z -= 1.0;
             }
-            rotation = PI / 2.;
+            rotation = 0.0;
             moved = true;
         }
 
@@ -72,7 +73,7 @@ fn move_player(
             if x < GRID_SIZE - 1.0 {
                 x += 1.0;
             }
-            rotation = PI;
+            rotation = -PI / 2.;
             moved = true;
         }
 
@@ -80,7 +81,7 @@ fn move_player(
             if x > 0.0 {
                 x -= 1.0;
             }
-            rotation = 0.0;
+            rotation = PI/2.0;
             moved = true;
         }
 
@@ -88,13 +89,12 @@ fn move_player(
 
         if moved {
             player.move_delay.reset();
+
+            tt.translation.x = x;
+            tt.translation.z = z;
+            tt.rotation = Quat::from_rotation_y(rotation);
         }
 
-        *tt = Transform {
-            translation: Vec3::new(x, 1.0, z),
-            rotation: Quat::from_rotation_y(rotation),
-            ..default()
-        };
     }
 }
 
