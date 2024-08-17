@@ -1,11 +1,24 @@
-use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY}, prelude::*};
+use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY, YELLOW}, prelude::*};
+
+use crate::GameState;
 
 
 pub struct MinimapPlugin;
 
+#[derive(Component)]
+pub struct Minimap;
+
 impl Plugin for MinimapPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
+        app.add_systems(Update, update_text);
+    }
+}
+
+fn update_text(mut query: Query<&mut Visibility, With<Minimap>>, state: Res<State<GameState>>) {
+    if *state.get() != GameState::LandingScreen {
+        let mut visible = query.single_mut();
+        *visible = Visibility::Hidden;
     }
 }
 
@@ -54,7 +67,7 @@ fn setup(
             parent.spawn((
                 TextBundle::from_section(
                     // Accepts a `String` or any type that converts into a `String`, such as `&str`
-                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.\n> Be precise!\n\nArrows: Move\nSpace: Cut the plants\nEnter: Finish mission",
+                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.",
                     TextStyle {
                         color: WHITE.into(),
                         font_size: 24.0,
@@ -70,5 +83,52 @@ fn setup(
                     ..default()
                 }),
             ));
+            parent.spawn((
+                TextBundle::from_section(
+                    // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                    "Arrows:      Move\nSpacebar:    Cut the plants\nEnter:       Finish the mission",
+                    TextStyle {
+                        color: YELLOW.into(),
+                        font_size: 24.0,
+                        ..default()
+                    },
+                ) // Set the justification of the Text
+                .with_text_justify(JustifyText::Left)
+                // Set the style of the TextBundle itself.
+                .with_style(Style {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(100.0),
+                    left: Val::Px(200.0),
+                    ..default()
+                }),
+            ));
+            parent.spawn((TextBundle::from_sections([
+                TextSection::new("Press ".to_string(), text_style.clone()),
+                TextSection::new(
+                    "any arrows".to_string(),
+                    TextStyle {
+                        color: YELLOW.into(),
+                        ..text_style.clone()
+                    },
+                ),
+                TextSection::new(" to start".to_string(), text_style),
+            ])             
+            
+            .with_text_justify(JustifyText::Center)
+            // Set the style of the TextBundle itself.
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                top: Val::Px(350.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            }),
+            Minimap {
+
+            }
+            )
+            );
         });
 }
