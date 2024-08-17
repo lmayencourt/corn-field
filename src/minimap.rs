@@ -29,7 +29,7 @@ fn setup(
 ) {
     let text_style = TextStyle::default();
 
-    let texture_handle = asset_server.load("pixil-frame-0.png");
+    let texture_handle = asset_server.load("crop_lvl1_17.png");
     let texture_atlas = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 1, None, None);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
@@ -51,10 +51,12 @@ fn setup(
         .with_children(|parent| {
             parent.spawn((
                 ImageBundle {
+                    transform: Transform::from_rotation(Quat::from_rotation_z((270.0_f32).to_radians())),
                     style: Style {
                         width: Val::Px(164.),
                         height: Val::Px(164.),
                         position_type: PositionType::Absolute,
+                        
                         ..default()
                     },
                     image: UiImage::new(texture_handle),
