@@ -15,12 +15,30 @@ pub struct Player {
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_player);
-        app.add_systems(Update, update_player);
-        app.add_systems(Update, action_cut);
+        app.add_systems(Update, move_player);
+        app.add_systems(Update, cut_corn);
     }
 }
 
-fn update_player(
+fn setup_player(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
+            material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
+            transform: Transform::from_xyz(0.0, 1.0, 0.0),
+            ..default()
+        },
+        Player {
+            move_delay: Timer::from_seconds(0.18, TimerMode::Once),
+        },
+    ));
+}
+
+fn move_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut query: Query<(&mut Transform, &mut Player)>,
     time: Res<Time>,
@@ -80,29 +98,11 @@ fn update_player(
     }
 }
 
-fn setup_player(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
-    commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
-            material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
-            ..default()
-        },
-        Player {
-            move_delay: Timer::from_seconds(0.18, TimerMode::Once),
-        },
-    ));
-}
-
-fn action_cut(
+fn cut_corn(
     mut commands: Commands,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut player: Query<&Transform, With<Player>>,
-    mut corn: Query<(&Transform, Entity), With<Corn>>
+    player: Query<&Transform, With<Player>>,
+    corn: Query<(&Transform, Entity), With<Corn>>
 ) {
     let player = player.single();
     if keyboard_input.pressed(KeyCode::Space) {
