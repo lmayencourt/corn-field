@@ -8,11 +8,13 @@ mod audio;
 mod camera;
 mod player;
 mod world;
+mod minimap;
 
 use audio::audio::AudioPlugin;
 use camera::GameCameraPlugin;
 use player::PlayerPlugin;
 use world::WorldPlugin;
+use minimap::MinimapPlugin;
 
 fn main() {
     App::new()
@@ -21,5 +23,6 @@ fn main() {
         .add_plugins(WorldPlugin)
         .add_plugins(AudioPlugin)
         .add_plugins(PlayerPlugin)
+        .add_plugins(MinimapPlugin)
         .run();
 }
