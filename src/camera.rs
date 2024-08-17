@@ -4,7 +4,7 @@
 
 use bevy::prelude::*;
 
-use crate::world::WORLD_SIZE;
+use crate::world::GRID_SIZE;
 
 pub struct GameCameraPlugin;
 
@@ -16,8 +16,8 @@ impl Plugin for GameCameraPlugin {
 
 fn setup_camera(mut commands: Commands) {
     commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(WORLD_SIZE/2.0, 18.0, -WORLD_SIZE/2.0)
-            .looking_at(Vec3::new(WORLD_SIZE / 2.0, 0.0, WORLD_SIZE / 2.0), Vec3::Y),
+        transform: Transform::from_xyz(GRID_SIZE/2.0, 18.0, -GRID_SIZE/2.0)
+            .looking_at(Vec3::new(GRID_SIZE / 2.0, 0.0, GRID_SIZE / 2.0), Vec3::Y),
         ..default()
     });
 }
