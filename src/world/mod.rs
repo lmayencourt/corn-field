@@ -106,7 +106,11 @@ fn setup_world(
             commands.spawn((
                 PbrBundle {
                     mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-                    material: materials.add(YELLOW),
+                    material: materials.add(StandardMaterial {
+                        reflectance: 0.00,
+                        unlit: false,
+                        base_color: YELLOW,
+                    ..Default::default()}),
                     transform: Transform::from_xyz(x as f32, num,  z as f32),
                     ..default()
                     },
