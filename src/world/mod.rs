@@ -6,7 +6,7 @@ use bevy::prelude::*;
 
 /// Size of the world and game grid
 pub const WORLD_SIZE: f32 = 20.0;
-pub const GRID_SIZE: isize = 16;
+pub const GRID_SIZE: f32 = 16.0;
 
 pub const YELLOW: Color = Color::srgb(234.0/255.0, 189.0/255.0, 71.0/255.0);
 
@@ -30,7 +30,7 @@ fn setup_world(
         PbrBundle {
             mesh: meshes.add(Plane3d::default().mesh().size(WORLD_SIZE, WORLD_SIZE)),
             material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
-            transform: Transform::from_xyz(WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE as f32)/2.0, 0.0, WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE as f32)/2.0),
+            transform: Transform::from_xyz(WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE)/2.0, 0.0, WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE)/2.0),
             ..default()
         },
     ));
@@ -85,14 +85,14 @@ fn setup_world(
         PbrBundle {
             mesh: meshes.add(Cuboid::new(1.0, 2.0, 1.0)),
             material: materials.add(Color::srgb(0.0, 0.0, 1.0)),
-            transform: Transform::from_xyz((GRID_SIZE-1) as f32, 1.0, (GRID_SIZE-1) as f32),
+            transform: Transform::from_xyz(GRID_SIZE-1.0, 1.0, GRID_SIZE-1.0),
             ..default()
         }
     );
 
     // We need apparently to work on the X - Z plane, Y being the height for us.
-    for x in 0..GRID_SIZE {
-        for z in 0..GRID_SIZE {
+    for x in 0..GRID_SIZE as usize {
+        for z in 0..GRID_SIZE as usize {
             commands.spawn(
                 PbrBundle {
                     mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),

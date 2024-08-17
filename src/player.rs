@@ -43,7 +43,7 @@ fn update_player(
         let mut moved = false;
 
         if keyboard_input.pressed(KeyCode::ArrowUp) {
-            if z < GRID_SIZE as f32 - 1.0 {
+            if z < GRID_SIZE - 1.0 {
                 z += 1.0;
             }
             rotation = -PI / 2.;
@@ -59,7 +59,7 @@ fn update_player(
         }
 
         if keyboard_input.pressed(KeyCode::ArrowLeft) {
-            if x < GRID_SIZE as f32 - 1.0 {
+            if x < GRID_SIZE - 1.0 {
                 x += 1.0;
             }
             rotation = PI;
