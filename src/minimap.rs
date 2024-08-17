@@ -14,9 +14,6 @@ fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    // Camera
-    commands.spawn(Camera2dBundle::default());
-
     let text_style = TextStyle::default();
 
     let texture_handle = asset_server.load("pixil-frame-0.png");
