@@ -8,8 +8,8 @@ use rand::Rng; // 0.8.5
 pub mod levels;
 
 /// Size of the world and game grid
-pub const WORLD_SIZE: f32 = 20.0;
-pub const GRID_SIZE: f32 = 16.0;
+pub const GRID_SIZE: f32 = 17.0;
+pub const WORLD_SIZE: f32 = GRID_SIZE + 4.0;
 
 pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
 pub const MILESTONE_COLOR: Color = Color::srgb(155.0/255.0, 34.0/255.0, 38.0/255.0);

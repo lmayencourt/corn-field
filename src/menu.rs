@@ -5,7 +5,7 @@
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{Corn, YELLOW, GRID_SIZE, levels::LEVEL_1};
+use crate::world::{Corn, GRID_SIZE, levels::LEVEL_1};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
