@@ -36,7 +36,22 @@ fn setup_player(
         Player {
             move_delay: Timer::from_seconds(0.18, TimerMode::Once),
         },
-    ));
+    )
+    ).with_children(
+        |children| {
+            children.spawn(PointLightBundle {
+                point_light: PointLight {
+                    color: Color::srgb(1.0, 1.0, 0.0),
+                    intensity: 500_000.0,
+                    range: 10.0,
+                    ..default()
+                },
+                transform: Transform::from_xyz(0.0, 2.0, 0.0),
+                ..default()
+            });
+        }
+    );
+
 }
 
 fn move_player(

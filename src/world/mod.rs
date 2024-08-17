@@ -64,13 +64,8 @@ fn setup_world(
         }
     }
 
-    // light
-    commands.spawn(DirectionalLightBundle {
-        transform: Transform::from_translation(Vec3::ONE).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    });
-
     // Sun
+    /*
     commands.spawn(DirectionalLightBundle {
         directional_light: DirectionalLight {
             color: Color::srgb(0.98, 0.95, 0.82),
@@ -81,7 +76,7 @@ fn setup_world(
             .looking_at(Vec3::new(-0.15, -0.05, 0.25), Vec3::Y),
         ..default()
     });
-
+*/
     // 0 0 marker stone
     commands.spawn(PbrBundle {
         mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
