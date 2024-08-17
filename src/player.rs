@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 use crate::GameState;
 use crate::world::{GRID_SIZE, Corn};
+use crate::menu::RestartGame;
 
 #[derive(Default)]
 pub struct PlayerPlugin;
@@ -18,6 +19,7 @@ impl Plugin for PlayerPlugin {
         app.add_systems(Startup, setup_player);
         app.add_systems(Update, move_player);
         app.add_systems(Update, cut_corn);
+        app.add_systems(Update, reset_player);
     }
 }
 
@@ -127,5 +129,17 @@ fn cut_corn(
                     commands.entity(corn).despawn();
                 }
         }
+    }
+}
+
+fn reset_player(
+    event: EventReader<RestartGame>,
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    if !event.is_empty() {
+        let mut transform = query.single_mut();
+        transform.translation.x = 0.0;
+        transform.translation.z = 0.0;
+        transform.rotation= Quat::from_rotation_y(PI);
     }
 }
