@@ -7,11 +7,12 @@ use bevy::prelude::*;
 mod camera;
 mod world;
 mod audio;
+mod player;
 
 use camera::GameCameraPlugin;
 use world::WorldPlugin;
 use audio::audio::AudioPlugin;
-
+use player::PlayerPlugin;
 
 fn main() {
     App::new()
