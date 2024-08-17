@@ -4,15 +4,15 @@
 
 use bevy::prelude::*;
 
-mod camera;
-mod world;
 mod audio;
+mod camera;
 mod player;
+mod world;
 
-use camera::GameCameraPlugin;
-use world::WorldPlugin;
 use audio::audio::AudioPlugin;
+use camera::GameCameraPlugin;
 use player::PlayerPlugin;
+use world::WorldPlugin;
 
 fn main() {
     App::new()

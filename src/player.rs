@@ -16,10 +16,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_player);
 
-       app.add_systems(
-            Update,
-            update_player);
-
+        app.add_systems(Update, update_player);
     }
 }
 
@@ -27,16 +24,13 @@ fn update_player(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut transforms: Query<&mut Transform, With<Player>>,
     mut player: Query<&mut Player>,
-    time: Res<Time>
-)
-{
-
+    time: Res<Time>,
+) {
     let mut tt = transforms.get_single_mut().unwrap();
     let mut player = player.get_single_mut().unwrap();
     // Access the x, y, z coordinates
     let mut x = tt.translation.x;
     let mut z = tt.translation.z;
-
 
     let mut rotation: f32 = 0.0;
     if player.move_delay.tick(time.delta()).finished() {
@@ -52,7 +46,7 @@ fn update_player(
 
         if keyboard_input.pressed(KeyCode::ArrowDown) {
             if z > 0.0 {
-                z-= 1.0;
+                z -= 1.0;
             }
             rotation = PI / 2.;
             moved = true;
@@ -81,22 +75,15 @@ fn update_player(
         }
 
         *tt = Transform {
-            translation: Vec3::new(
-                x,
-                1.0,
-                z,
-            ),
+            translation: Vec3::new(x, 1.0, z),
             rotation: Quat::from_rotation_y(rotation),
             ..default()
         };
-        
-        
     }
-
 }
 
 fn setup_player(
-    mut commands:Commands,
+    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
@@ -108,8 +95,7 @@ fn setup_player(
             ..default()
         },
         Player {
-            move_delay: Timer::from_seconds(0.18,TimerMode::Once),
+            move_delay: Timer::from_seconds(0.18, TimerMode::Once),
         },
     ));
 }
-

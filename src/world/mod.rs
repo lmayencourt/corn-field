@@ -8,7 +8,7 @@ use bevy::prelude::*;
 pub const WORLD_SIZE: f32 = 20.0;
 pub const GRID_SIZE: f32 = 16.0;
 
-pub const YELLOW: Color = Color::srgb(234.0/255.0, 189.0/255.0, 71.0/255.0);
+pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
 
 /// Plugin to be included in main application
 pub struct WorldPlugin;
@@ -21,19 +21,21 @@ impl Plugin for WorldPlugin {
 
 /// System to spawn all the entities for the game world
 fn setup_world(
-    mut commands:Commands,
+    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // plane
-    commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Plane3d::default().mesh().size(WORLD_SIZE, WORLD_SIZE)),
-            material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
-            transform: Transform::from_xyz(WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE)/2.0, 0.0, WORLD_SIZE/2.0 -(WORLD_SIZE - GRID_SIZE)/2.0),
-            ..default()
-        },
-    ));
+    commands.spawn((PbrBundle {
+        mesh: meshes.add(Plane3d::default().mesh().size(WORLD_SIZE, WORLD_SIZE)),
+        material: materials.add(Color::srgb(0.3, 0.5, 0.3)),
+        transform: Transform::from_xyz(
+            WORLD_SIZE / 2.0 - (WORLD_SIZE - GRID_SIZE) / 2.0,
+            0.0,
+            WORLD_SIZE / 2.0 - (WORLD_SIZE - GRID_SIZE) / 2.0,
+        ),
+        ..default()
+    },));
 
     // light
     commands.spawn(DirectionalLightBundle {
@@ -54,53 +56,43 @@ fn setup_world(
     });
 
     // 0 0 marker stone
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-            material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
-            transform: Transform::from_xyz(0.0, 1.0, 0.0),
-            ..default()
-        }
-    );
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
+        material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
+        transform: Transform::from_xyz(0.0, 1.0, 0.0),
+        ..default()
+    });
     // x marker stone
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-            material: materials.add(Color::srgb(1.0, 0.0, 0.0)),
-            transform: Transform::from_xyz(1.0, 1.0, 0.0),
-            ..default()
-        }
-    );
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
+        material: materials.add(Color::srgb(1.0, 0.0, 0.0)),
+        transform: Transform::from_xyz(1.0, 1.0, 0.0),
+        ..default()
+    });
     // z marker stone
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-            material: materials.add(Color::srgb(0.0, 1.0, 0.0)),
-            transform: Transform::from_xyz(0.0, 1.0, 2.0),
-            ..default()
-        }
-    );
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
+        material: materials.add(Color::srgb(0.0, 1.0, 0.0)),
+        transform: Transform::from_xyz(0.0, 1.0, 2.0),
+        ..default()
+    });
     // end of grid stone
-    commands.spawn(
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-            material: materials.add(Color::srgb(0.0, 0.0, 1.0)),
-            transform: Transform::from_xyz(GRID_SIZE-1.0, 1.0, GRID_SIZE-1.0),
-            ..default()
-        }
-    );
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
+        material: materials.add(Color::srgb(0.0, 0.0, 1.0)),
+        transform: Transform::from_xyz(GRID_SIZE - 1.0, 1.0, GRID_SIZE - 1.0),
+        ..default()
+    });
 
     // We need apparently to work on the X - Z plane, Y being the height for us.
     for x in 0..GRID_SIZE as usize {
         for z in 0..GRID_SIZE as usize {
-            commands.spawn(
-                PbrBundle {
-                    mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
-                    material: materials.add(YELLOW),
-                    transform: Transform::from_xyz(x as f32, 0.50, z as f32),
-                    ..default()
-                }
-            );
+            commands.spawn(PbrBundle {
+                mesh: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
+                material: materials.add(YELLOW),
+                transform: Transform::from_xyz(x as f32, 0.50, z as f32),
+                ..default()
+            });
         }
     }
 }
