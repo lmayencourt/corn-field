@@ -10,6 +10,7 @@ pub const WORLD_SIZE: f32 = 20.0;
 pub const GRID_SIZE: f32 = 16.0;
 
 pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
+pub const MILESTONE_COLOR: Color = Color::srgb(155.0/255.0, 34.0/255.0, 38.0/255.0);
 
 /// Component to identify the Corn
 #[derive(Component)]
@@ -85,8 +86,8 @@ fn setup_world(
     // 0 0 marker stone
     commands.spawn(PbrBundle {
         mesh: meshes.add(Cuboid::new(0.2, 2.0, 0.2)),
-        material: materials.add(Color::srgb(0.0, 0.0, 0.0)),
-        transform: Transform::from_xyz(0.0, 1.0, 0.0),
+        material: materials.add(MILESTONE_COLOR),
+        transform: Transform::from_xyz(-1.0, 1.0, -1.0),
         ..default()
     });
 
