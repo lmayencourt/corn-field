@@ -9,9 +9,9 @@ use crate::world::{Corn, levels::{LEVELS, LEVEL_COUNT}};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
-struct GameScore {
-    forgotten: u32,
-    mistakes: u32,
+pub struct GameScore {
+    pub forgotten: u32,
+    pub mistakes: u32,
 }
 
 /// Component used to mark the mistakes at the end of the game
