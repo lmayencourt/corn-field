@@ -71,7 +71,7 @@ fn move_player(
     let mut z = tt.translation.z;
 
     let mut rotation: f32 = 0.0;
-    if *state.get() != GameState::LandingScreen {
+    if *state.get() == GameState::InGame {
         if player.move_delay.tick(time.delta()).finished() {
             let mut moved = false;
 
@@ -126,7 +126,7 @@ fn cut_corn(
     state: Res<State<GameState>>
 ) {
     let player = player.single();
-    if *state.get() != GameState::LandingScreen {
+    if *state.get() == GameState::InGame {
         if keyboard_input.pressed(KeyCode::Space) {
             // If space bar pressed, remove the corn at the position of the player
             for (corn_position, corn) in corn.iter() {
