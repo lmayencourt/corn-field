@@ -18,6 +18,8 @@ pub const WORLD_OFFSET_OF_GRID: isize = 5;
 pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
 pub const MILESTONE_COLOR: Color = Color::srgb(155.0/255.0, 34.0/255.0, 38.0/255.0);
 pub const SCALE_COLOR: Color = Color::srgb(34.0/255.0, 34.0/255.0, 255.0/255.0);
+const INTENSITY_LIGHT: f32 = 100_000.0;
+const RANGE_LIGHT : f32= 4.0;
 
 /// Component to identify the Corn
 #[derive(Component)]
@@ -49,6 +51,7 @@ fn setup_world(
     current_level: Res<CurrentLevel>,
 ) {
     let level_size = LEVELS[current_level.idx].grid_size as f32;
+    let COLOR_LIGHT_MILESTONE: Color = Color::srgb(1.0, 0.0, 0.0);
 
     // 0 0 marker stone
     commands.spawn(PbrBundle {
@@ -56,7 +59,20 @@ fn setup_world(
         material: materials.add(MILESTONE_COLOR),
         transform: Transform::from_xyz(-1.0, 1.0, -1.0),
         ..default()
-    });
+    })
+    .with_children(
+        |children| {
+            children.spawn(PointLightBundle {
+                point_light: PointLight {
+                    color: COLOR_LIGHT_MILESTONE,
+                    intensity: INTENSITY_LIGHT,
+                    range: RANGE_LIGHT,
+                    ..default()
+                },
+                transform: Transform::from_xyz(0.0, 1.1, 0.0),
+                ..default()
+            });
+        });
 
     spawn_board(commands, meshes, materials, current_level);
 }
@@ -73,15 +89,15 @@ fn reset_world(
 ) {
     if !event.is_empty() {
         for corn in corns.iter() {
-            commands.entity(corn).despawn();
+            commands.entity(corn).despawn_recursive();
         }
 
         for marker in markers.iter() {
-            commands.entity(marker).despawn();
+            commands.entity(marker).despawn_recursive();
         }
 
         for floor in floors.iter() {
-            commands.entity(floor).despawn();
+            commands.entity(floor).despawn_recursive();
         }
 
         spawn_board(commands, meshes, materials, current_level);
@@ -127,7 +143,6 @@ fn spawn_board(
                         },
                         Floor,
                     ));
-
             }
         }
     }
@@ -154,7 +169,10 @@ fn spawn_board(
         }
     }
 
-    // Grid Markers
+    let COLOR_LIGHT_SCALE: Color = Color::srgb(0.0, 0.0, 1.0);
+
+
+    // Grid Markers to help the player to find the scale of the game
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Cuboid::new(0.2, 1.0, 0.2)),
@@ -163,7 +181,21 @@ fn spawn_board(
             ..default()
         },
         Marker,
-    ));
+    ))
+    .with_children(
+        |children| {
+            children.spawn(PointLightBundle {
+                point_light: PointLight {
+                    color: COLOR_LIGHT_SCALE,
+                    intensity: INTENSITY_LIGHT,
+                    range: RANGE_LIGHT,
+                    ..default()
+                },
+                transform: Transform::from_xyz(0.0, 1.1, 0.0),
+                ..default()
+            });
+            
+        });
 
     commands.spawn((
         PbrBundle {
@@ -173,5 +205,17 @@ fn spawn_board(
             ..default()
         },
         Marker,
-    ));
+    )).with_children(
+        |children| {
+            children.spawn(PointLightBundle {
+                point_light: PointLight {
+                    color: COLOR_LIGHT_SCALE,
+                    intensity: INTENSITY_LIGHT,
+                    range: RANGE_LIGHT,
+                    ..default()
+                },
+                transform: Transform::from_xyz(0.0, 1.1, 0.0),
+                ..default()
+            });
+        });
 }

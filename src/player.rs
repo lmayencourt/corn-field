@@ -29,6 +29,10 @@ fn setup_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+
+
+    let COLOR_LIGHT_SCALE: Color = Color::srgb(0.0, 0.0, 1.0);
+
     commands.spawn((
         SceneBundle {
             transform: Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(2.0)),
