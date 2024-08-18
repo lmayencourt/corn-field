@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>CornField</title>
+        
+    
+<link rel="modulepreload" href="./corn-field-e7bd144c84f8eb9f.js" crossorigin=anonymous integrity="sha384-5LNv2Tfhna7UPkovSk6t0pggDX+Y95AOJHxMwWGT7UNejFVUxse6HcBmScvQGLAK">
+<link rel="preload" href="./corn-field-e7bd144c84f8eb9f_bg.wasm" crossorigin=anonymous integrity="sha384-nQqcg2osyTivgMQZxF8gNFDnN0+LVJr+15Q27yle02NQgK6zKbeGNcBcbMokopDf" as="fetch" type="application/wasm"></head>
+    <body>
+        <div class="game-container">
+            <div class="lds-dual-ring"></div>
+            <canvas id="bevy">
+                Javascript and support for canvas is required
+            </canvas>
+        </div>
+    
+<script type="module" nonce="4TM1p9sPtPqpsEUsuqgz+A==">
+import init, * as bindings from './corn-field-e7bd144c84f8eb9f.js';
+const wasm = await init('./corn-field-e7bd144c84f8eb9f_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
