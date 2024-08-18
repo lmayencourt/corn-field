@@ -31,9 +31,7 @@ struct GhostTrail {
 
 impl Plugin for SkyPlugin {
     fn build(&self, app: &mut App) {
-        //app.add_plugins(HanabiPlugin);
-        //app.add_systems(Startup, setupgpu);
-        app.add_plugins(ParticleSystemPlugin); // <-- Add the plugin
+        app.add_systems(Startup, setupgpu);
         app.add_systems(Startup, setupstaticstar);
         app.add_systems(Startup, setupstar);
         app.add_systems(Startup, spawn_particle_system);
@@ -102,8 +100,6 @@ fn setupstaticstar(
 fn setupgpu(
     mut commands: Commands,
     mut effects: ResMut<Assets<EffectAsset>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     // Define a color gradient from white to transparent black
     let mut gradient = Gradient::new();
@@ -131,28 +127,27 @@ fn setupgpu(
     // Initialize the total lifetime of the particle, that is
     // the time for which it's simulated and rendered. This modifier
     // is almost always required, otherwise the particles won't show.
-    let lifetime = module.lit(10.); // literal value "10.0"
+    let lifetime = module.lit(1.); // literal value "10.0"
     let init_lifetime = SetAttributeModifier::new(Attribute::LIFETIME, lifetime);
 
     // Every frame, add a gravity-like acceleration downward
     let accel = module.lit(Vec3::new(0., -3., 0.));
     let update_accel = AccelModifier::new(accel);
-    let init_size = SetSizeModifier {
-        size: CpuValue::Single(Vec2::new(0.1, 0.2)), // Size of each particle (0.2 units)
 
-                                                     //size: CpuValue::Uniform((Vec2::new(0.1, 0.2), Vec2::new(0.1, 0.1))), // Size of each particle (0.2 units)
+    let main_set_size_modifier = SetSizeModifier {
+        size: Vec2::splat(0.1).into(),
     };
+
     // Create the effect asset
     let effect = EffectAsset::new(
         // Maximum number of particles alive at a time
         vec![100],
         // Spawn at a rate of 5 particles per second
-        Spawner::rate(5.0.into()),
+        Spawner::once(10.0.into(), true),
         // Move the expression module into the asset
         module,
     )
     .with_name("MyEffect")
-    //.init(init_size) // Set the initial size
     .init(init_pos)
     .init(init_vel)
     .init(init_lifetime)
@@ -160,6 +155,7 @@ fn setupgpu(
     // Render the particles with a color gradient over their
     // lifetime. This maps the gradient key 0 to the particle spawn
     // time, and the gradient key 1 to the particle death (10s).
+    .render(main_set_size_modifier)
     .render(ColorOverLifetimeModifier { gradient });
 
     // Insert into the asset system
@@ -167,7 +163,7 @@ fn setupgpu(
 
     commands.spawn(ParticleEffectBundle {
         effect: ParticleEffect::new(effect_handle),
-        transform: Transform::from_xyz(0.0, 3.0, 32.0), // Specify the position (x, y, z)
+        transform: Transform::from_xyz(0.0, 3.0, 0.0), // Specify the position (x, y, z)
         ..Default::default()
     });
 }
