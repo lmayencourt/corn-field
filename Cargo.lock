@@ -547,6 +547,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_embedded_assets"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b3f3e7b41a9b01b767ba07c4ebb083b2d8d8055e57ddef7e55e502bbfc961505"
+dependencies = [
+ "bevy",
+ "cargo-emit",
+ "futures-io",
+ "futures-lite",
+ "thiserror",
+]
+
+[[package]]
 name = "bevy_encase_derive"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -776,26 +789,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b7ce4266293629a2d10459cc112dffe3b3e9229a4f2b8a4d20061b8dd53316d0"
 dependencies = [
  "glam",
-]
-
-[[package]]
-name = "bevy_particle_systems"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6355fc6d813d41d32fbab7a7ebd87d9dd9b2ad0a9e8509094de7a23108d47b7"
-dependencies = [
- "bevy_app",
- "bevy_asset",
- "bevy_color",
- "bevy_ecs",
- "bevy_hierarchy",
- "bevy_math",
- "bevy_reflect",
- "bevy_render",
- "bevy_sprite",
- "bevy_time",
- "bevy_transform",
- "rand",
 ]
 
 [[package]]
@@ -1310,6 +1303,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "cargo-emit"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1582e1c9e755dd6ad6b224dcffb135d199399a4568d454bd89fe515ca8425695"
+
+[[package]]
 name = "cc"
 version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1538,8 +1537,8 @@ name = "corn-field"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bevy_embedded_assets",
  "bevy_hanabi",
- "bevy_particle_systems",
  "rand",
 ]
 

@@ -3,6 +3,7 @@
 */
 
 use bevy::prelude::*;
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 
 mod audio;
 mod camera;
@@ -31,6 +32,7 @@ enum GameState {
 
 fn main() {
     App::new()
+        .add_plugins(EmbeddedAssetPlugin{mode: PluginMode::ReplaceDefault})
         .add_plugins(DefaultPlugins)
         .insert_state(GameState::LandingScreen)
         .add_plugins(SkyPlugin)
