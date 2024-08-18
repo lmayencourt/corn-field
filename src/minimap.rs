@@ -80,7 +80,7 @@ fn update_text(
             }
         }
 
-        if *state.get() == GameState::Score  || *state.get() == GameState::EndGame || *state.get() == GameState::GameOver{
+        if *state.get() == GameState::Score  || *state.get() == GameState::EndGame {
             if label.label == LABEL_SCORE {
                 *visible = Visibility::Visible;
                 text.sections[2].value = score.mistakes.to_string().clone();
@@ -89,12 +89,19 @@ fn update_text(
             if label.label == LABEL_INDIC {
                 if score.mistakes == 0 && score.forgotten == 0 {
                     text.sections[0].value = " > Excellent!".to_string();
-                } else {
+                } else if score.mistakes <= LEVELS[current_level.idx].mistake_level && score.forgotten <= LEVELS[current_level.idx].forgotten_level {
                     text.sections[0].value = " > Not perfect but we will make do...".to_string();   
+                } else {
+                    text.sections[0].value = " > The circle is not working, try again".to_string();
                 }
             }
         }
+        
+
         if *state.get() == GameState::GameOver {
+            if label.label == LABEL_INDIC {
+                text.sections[0].value = " > Well done! The mission is completed.".to_string();   
+            }
             if label.label == LABEL_OVER  {
                 *visible = Visibility::Visible;
             }
