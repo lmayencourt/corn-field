@@ -106,17 +106,26 @@ fn update_minimap(
     asset_server: Res<AssetServer>,
     mut query: Query<&mut UiImage, With<Minimap>>,
     current_level: ResMut<CurrentLevel>,
+    state: Res<State<GameState>>
+
 ) {
     let mut image = query.single_mut();
-    let texture_handle = asset_server.load(LEVELS[current_level.idx].image);
+    
+    if *state.get() != GameState::GameOver {
+        let texture_handle_map = asset_server.load(LEVELS[current_level.idx].image);
+        *image = UiImage::new(texture_handle_map);
+    } else {
+        let texture_handle_over = asset_server.load("game_over.png");
+        *image = UiImage::new(texture_handle_over);
 
-    *image = UiImage::new(texture_handle);
+    }
 }
 
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     current_level: ResMut<CurrentLevel>,
+    
 ) {
     let text_style = TextStyle::default();
 
