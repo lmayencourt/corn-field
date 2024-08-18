@@ -15,9 +15,12 @@ pub struct TextLabel {
     label: i32,
 }
 
+//Accepts a `String` or any type that converts into a `String`, such as `&str`
+
 const LABEL_INTRO: i32 = 0;
 const LABEL_SCORE: i32 = 1;
 const LABEL_LEVEL: i32 = 2;
+const LABEL_INDIC: i32 = 3;
 
 // If you add minimap component you cannot add minimap2 component
 #[derive(Component)]
@@ -48,16 +51,41 @@ fn update_text(
         if label.label == LABEL_SCORE {
             *visible = Visibility::Hidden;
         }
+
         if *state.get() != GameState::LandingScreen {
             if label.label == LABEL_INTRO {
                 *visible = Visibility::Hidden;
             }
         }
+
+        if *state.get() == GameState::LandingScreen {
+            if label.label == LABEL_INDIC {
+                text.sections[0].value = "> We have an urgent situation on Earth.\n> No time to explain!\n> I need you to create the crop circle in sector 42.".to_string();
+            }
+        }
+
+        if *state.get() == GameState::InGame {
+            if label.label == LABEL_INDIC {
+                if current_level.idx == 0 {
+                    text.sections[0].value = "> Let start simple.".to_string();
+                } else {
+                    text.sections[0].value = " > You are ready to scale up!".to_string();
+                }
+            }
+        }
+
         if *state.get() == GameState::Score {
             if label.label == LABEL_SCORE {
                 *visible = Visibility::Visible;
                 text.sections[2].value = score.mistakes.to_string().clone();
                 text.sections[4].value = score.forgotten.to_string().clone();
+            }
+            if label.label == LABEL_INDIC {
+                if score.mistakes == 0 && score.forgotten == 0 {
+                    text.sections[0].value = " > Excellent!".to_string();
+                } else {
+                    text.sections[0].value = " > Not perfect but we will make do...".to_string();   
+                }
             }
         }
         if *state.get() == GameState::EndGame {
@@ -123,9 +151,32 @@ fn setup(
                 Outline::new(Val::Px(5.0), Val::ZERO, GRAY.into()),
             ));
             parent.spawn((
+                TextBundle::from_sections([
+                    TextSection::from_style(
+                
+                    TextStyle {
+                        color: WHITE.into(),
+                        font_size: 24.0,
+                        ..default()
+                    },
+                )
+                ]) // Set the justification of the Text
+                .with_text_justify(JustifyText::Left)
+                // Set the style of the TextBundle itself.
+                .with_style(Style {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(40.0),
+                    left: Val::Px(200.0),
+                    ..default()
+                }),
+                TextLabel {
+                    label: LABEL_INDIC,
+                },
+            ));
+            parent.spawn((
                 TextBundle::from_section(
                     // Accepts a `String` or any type that converts into a `String`, such as `&str`
-                    "> We have an urgent situation on Earth.\n> No time to explain!\n> I need you to create the crop circle in sector 42.",
+                    "Arrows: Move           Spacebar: Cut the plants        Enter: Finish the mission",
                     TextStyle {
                         color: WHITE.into(),
                         font_size: 24.0,
@@ -137,25 +188,6 @@ fn setup(
                 .with_style(Style {
                     position_type: PositionType::Absolute,
                     top: Val::Px(5.0),
-                    left: Val::Px(200.0),
-                    ..default()
-                }),
-            ));
-            parent.spawn((
-                TextBundle::from_section(
-                    // Accepts a `String` or any type that converts into a `String`, such as `&str`
-                    "Arrows:      Move\nSpacebar:    Cut the plants\nEnter:       Finish the mission",
-                    TextStyle {
-                        color: WHITE.into(),
-                        font_size: 24.0,
-                        ..default()
-                    },
-                ) // Set the justification of the Text
-                .with_text_justify(JustifyText::Left)
-                // Set the style of the TextBundle itself.
-                .with_style(Style {
-                    position_type: PositionType::Absolute,
-                    top: Val::Px(100.0),
                     left: Val::Px(200.0),
                     ..default()
                 }),
@@ -229,8 +261,8 @@ fn setup(
                 position_type: PositionType::Absolute,
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
-                top: Val::Px(20.0),
-                left: Val::Px(1000.0),
+                top: Val::Px(250.0),
+                left: Val::Px(5.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()
