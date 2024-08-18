@@ -1,10 +1,12 @@
-use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY, YELLOW}, prelude::*};
+use bevy::{
+    color::palettes::css::{ANTIQUE_WHITE, GRAY, WHITE, YELLOW},
+    prelude::*,
+};
 
-use crate::GameState;
-use crate::world::levels::LEVELS;
 use crate::menu::CurrentLevel;
 use crate::menu::GameScore;
-
+use crate::world::levels::LEVELS;
+use crate::GameState;
 
 pub struct MinimapPlugin;
 
@@ -29,7 +31,12 @@ impl Plugin for MinimapPlugin {
     }
 }
 
-fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state: Res<State<GameState>>, score: ResMut<GameScore>, current_level: ResMut<CurrentLevel>) {
+fn update_text(
+    mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,
+    state: Res<State<GameState>>,
+    score: ResMut<GameScore>,
+    current_level: ResMut<CurrentLevel>,
+) {
     let level_size = LEVELS[current_level.idx].grid_size as f32;
 
     for (mut visible, label, mut text) in query.iter_mut() {
@@ -37,7 +44,6 @@ fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state
             text.sections[1].value = (current_level.idx + 1).to_string().clone();
             text.sections[3].value = level_size.to_string().clone();
             text.sections[5].value = level_size.to_string().clone();
-
         }
         if label.label == LABEL_SCORE {
             *visible = Visibility::Hidden;
@@ -46,7 +52,6 @@ fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state
             if label.label == LABEL_INTRO {
                 *visible = Visibility::Hidden;
             }
-
         }
         if *state.get() == GameState::Score {
             if label.label == LABEL_SCORE {
@@ -54,7 +59,6 @@ fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state
                 text.sections[2].value = score.mistakes.to_string().clone();
                 text.sections[4].value = score.forgotten.to_string().clone();
             }
-
         }
         if *state.get() == GameState::EndGame {
             if label.label == LABEL_SCORE {
