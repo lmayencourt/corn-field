@@ -6,7 +6,6 @@ use rand::Rng;
 
 pub struct SkyPlugin;
 
-use crate::world::WORLD_SIZE;
 
 #[derive(Component)]
 struct Star {
@@ -120,7 +119,7 @@ fn setupgpu(
 
     commands.spawn(ParticleEffectBundle {
         effect: ParticleEffect::new(effect_handle),
-        transform: Transform::from_xyz(0.0, 3.0, WORLD_SIZE), // Specify the position (x, y, z)
+        transform: Transform::from_xyz(0.0, 3.0, 32.0), // Specify the position (x, y, z)
         ..Default::default()
     });
 }
