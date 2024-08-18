@@ -120,16 +120,19 @@ fn cut_corn(
     mut commands: Commands,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     player: Query<&Transform, With<Player>>,
-    corn: Query<(&Transform, Entity), With<Corn>>
+    corn: Query<(&Transform, Entity), With<Corn>>,
+    state: Res<State<GameState>>
 ) {
     let player = player.single();
-    if keyboard_input.pressed(KeyCode::Space) {
-        // If space bar pressed, remove the corn at the position of the player
-        for (corn_position, corn) in corn.iter() {
-            if player.translation.x == corn_position.translation.x &&
-                player.translation.z == corn_position.translation.z {
-                    commands.entity(corn).despawn();
+    if *state.get() != GameState::LandingScreen {
+        if keyboard_input.pressed(KeyCode::Space) {
+            // If space bar pressed, remove the corn at the position of the player
+            for (corn_position, corn) in corn.iter() {
+                if player.translation.x == corn_position.translation.x &&
+                    player.translation.z == corn_position.translation.z {
+                        commands.entity(corn).despawn();
                 }
+            }   
         }
     }
 }
