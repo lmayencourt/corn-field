@@ -5,7 +5,7 @@
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{Corn, GRID_SIZE, levels::LEVEL_1};
+use crate::world::{Corn, GRID_SIZE, levels::LEVELS};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
@@ -106,9 +106,11 @@ fn compute_score(
 
         score.mistakes = 0;
         score.forgotten = 0;
-        for x in 0..GRID_SIZE as usize {
-            for y in 0..GRID_SIZE as usize {
-                if LEVEL_1[x][y] == 0 {
+        let level_size = LEVELS[0].grid_size;
+        for (y, line) in LEVELS[0].data.lines().enumerate() {
+            println!("line {} is {:?}", y, line);
+            for (x, char) in line.chars().enumerate() {
+                if char == '0' {
                     if field_map[x][y] == 1 {
                         score.forgotten += 1;
                         commands.spawn((PbrBundle {
