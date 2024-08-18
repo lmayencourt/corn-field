@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::menu::CurrentLevel;
+use crate::{menu::CurrentLevel, world::levels::LEVEL_COUNT};
 use crate::menu::GameScore;
 use crate::world::levels::LEVELS;
 use crate::GameState;
@@ -68,8 +68,10 @@ fn update_text(
             if label.label == LABEL_INDIC {
                 if current_level.idx == 0 {
                     text.sections[0].value = "> Let start simple.".to_string();
-                } else {
+                } else if current_level.idx < (LEVEL_COUNT -1) {
                     text.sections[0].value = " > You are ready to scale up!".to_string();
+                } else {
+                    text.sections[0].value = " > Last one to go!".to_string();
                 }
             }
         }
