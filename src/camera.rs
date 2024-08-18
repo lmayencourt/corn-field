@@ -26,7 +26,7 @@ fn setup_camera(
     let level_size = LEVELS[current_level.idx].grid_size as f32;
     commands.spawn((
         Camera3dBundle {
-            transform: Transform::from_xyz(level_size/2.0, 18.0, -level_size/2.0)
+            transform: Transform::from_xyz(level_size/2.0, level_size, -level_size/2.0)
                 .looking_at(Vec3::new(level_size / 2.0, 0.0, level_size / 2.0), Vec3::Y),
             ..default()
         },
@@ -43,7 +43,7 @@ fn update_camera(
         let level_size = LEVELS[current_level.idx].grid_size as f32;
         let mut camera = query.single_mut();
         
-        *camera = Transform::from_xyz(level_size/2.0, 18.0, -level_size/2.0)
+        *camera = Transform::from_xyz(level_size/2.0, level_size, -level_size/2.0)
         .looking_at(Vec3::new(level_size / 2.0, 0.0, level_size / 2.0), Vec3::Y);
     }
 }
