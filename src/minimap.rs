@@ -3,11 +3,18 @@ use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY, YELLOW}, prelude::
 use crate::GameState;
 use crate::world::levels::LEVELS;
 use crate::menu::CurrentLevel;
+use crate::menu::GameScore;
+
 
 pub struct MinimapPlugin;
 
 #[derive(Component)]
-pub struct TextIntro;
+pub struct TextLabel {
+    label: i32,
+}
+
+const LABEL_INTRO: i32 = 0;
+const LABEL_SCORE: i32 = 1;
 
 // If you add minimap component you cannot add minimap2 component
 #[derive(Component)]
@@ -21,10 +28,35 @@ impl Plugin for MinimapPlugin {
     }
 }
 
-fn update_text(mut query: Query<&mut Visibility, With<TextIntro>>, state: Res<State<GameState>>) {
-    if *state.get() != GameState::LandingScreen {
-        let mut visible = query.single_mut();
-        *visible = Visibility::Hidden;
+fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state: Res<State<GameState>>, score: ResMut<GameScore>,) {
+    let textMistakes = score.mistakes.to_string();
+    let textForgotten = score.forgotten.to_string();
+
+    for (mut visible, label, mut text) in query.iter_mut() {
+        if label.label == LABEL_SCORE {
+            *visible = Visibility::Hidden;
+        }
+        if *state.get() != GameState::LandingScreen {
+            if label.label == LABEL_INTRO {
+                *visible = Visibility::Hidden;
+            }
+
+        }
+        if *state.get() == GameState::Score {
+            if label.label == LABEL_SCORE {
+                *visible = Visibility::Visible;
+                text.sections[2].value = textMistakes.clone();
+                text.sections[4].value = textForgotten.clone();
+            }
+
+        }
+        if *state.get() == GameState::EndGame {
+            if label.label == LABEL_SCORE {
+                *visible = Visibility::Visible;
+                text.sections[2].value = textMistakes.clone();
+                text.sections[4].value = textForgotten.clone();
+            }
+        }
     }
 }
 
@@ -70,7 +102,7 @@ fn setup(
                         width: Val::Px(164.),
                         height: Val::Px(164.),
                         position_type: PositionType::Absolute,
-                        
+
                         ..default()
                     },
                     image: UiImage::new(texture_handle),
@@ -147,8 +179,8 @@ fn setup(
                     },
                 ),
                 TextSection::new(" to start".to_string(), text_style),
-            ])             
-            
+            ])
+
             .with_text_justify(JustifyText::Center)
             // Set the style of the TextBundle itself.
             .with_style(Style {
@@ -160,8 +192,61 @@ fn setup(
                 align_items: AlignItems::Center,
                 ..default()
             }),
-            TextIntro {}
-            )
-            );
-        });
+            TextLabel {
+                label: LABEL_INTRO,
+            },
+        ));
+            parent.spawn((TextBundle::from_sections([
+                TextSection::new(
+                    "SCORE: \n".to_string(),
+                    TextStyle {
+                        color: WHITE.into(),
+                        ..default()
+                    },
+                ),
+                TextSection::new(
+                    "Mistakes: ".to_string(),
+                    TextStyle {
+                        color: WHITE.into(),
+                        ..default()
+                    },
+                ),
+                TextSection::from_style(
+                    TextStyle {
+                        color: WHITE.into(),
+                        ..default()
+                    },
+                ),
+                TextSection::new(
+                    "\nForgotten: ".to_string(),
+                    TextStyle {
+                        color: WHITE.into(),
+                        ..default()
+                    },
+                ),
+                TextSection::from_style(
+                    TextStyle {
+                        color: WHITE.into(),
+                        ..default()
+                    },
+                ),
+            ])
+
+            .with_text_justify(JustifyText::Right)
+            // Set the style of the TextBundle itself.
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                top: Val::Px(20.0),
+                right: Val::Px(200.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            }),
+            TextLabel {
+                label: LABEL_SCORE,
+            },
+        ));
+          });
 }
