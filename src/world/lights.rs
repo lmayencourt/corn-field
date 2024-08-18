@@ -3,7 +3,7 @@
 */
 
 use bevy::prelude::*;
-use bevy_hanabi::prelude::*;
+// use bevy_hanabi::prelude::*;
 
 use crate::GameState;
 use crate::menu::GameScore;
@@ -32,7 +32,6 @@ fn draw_lights(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     current_level: Res<CurrentLevel>,
-    mut effects: ResMut<Assets<EffectAsset>>
 ) {
     let COLOR_LIGHT_SCALE: Color = Color::srgb(0.0, 0.0, 1.0);
     if !event.is_empty() {
