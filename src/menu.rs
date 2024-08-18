@@ -165,7 +165,7 @@ fn compute_score(
             }
         }
 
-        if score.mistakes == 0 {
+        if score.mistakes == 0 && score.forgotten == 0 {
             lights.send_default();
         }
 
