@@ -189,7 +189,7 @@ fn setupstar(
         let z = rng.gen_range(-STARFIELD_SIZE.z / 2.0..STARFIELD_SIZE.z / 2.0);
         let size = rng.gen_range(0.1..0.3);
 
-        let emissive = rng.gen_range(1.0..1000.0);
+        let emissive = rng.gen_range(1.0..10000.0);
         let alpha = rng.gen_range(1.0..10.0);
 
         commands
@@ -276,7 +276,7 @@ fn draw_ghost_trail(
                     transform: visible.clone(),
                     ..default()
                 })
-                .insert(GhostTrail { life: 20 });
+                .insert(GhostTrail { life: 40 });
         }
     }
 }
