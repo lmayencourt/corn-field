@@ -66,7 +66,6 @@ fn setup(
         .with_children(|parent| {
             parent.spawn((
                 ImageBundle {
-                    transform: Transform::from_rotation(Quat::from_rotation_z((270.0_f32).to_radians())),
                     style: Style {
                         width: Val::Px(164.),
                         height: Val::Px(164.),
@@ -83,7 +82,6 @@ fn setup(
             ));
             parent.spawn((
                 ImageBundle {
-                    transform: Transform::from_rotation(Quat::from_rotation_z((270.0_f32).to_radians())),
                     style: Style {
                         width: Val::Px(164.),
                         height: Val::Px(164.),
