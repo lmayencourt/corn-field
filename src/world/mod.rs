@@ -11,6 +11,9 @@ use crate::menu::{RestartGame, CurrentLevel};
 use crate::world::levels::LEVELS;
 
 pub mod levels;
+pub mod lights;
+
+use lights::CropCircleLightsPlugin;
 
 /// Size of the world and game grid
 pub const WORLD_OFFSET_OF_GRID: isize = 5;
@@ -40,6 +43,7 @@ impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_world);
         app.add_systems(Update, reset_world);
+        app.add_plugins(CropCircleLightsPlugin);
     }
 }
 

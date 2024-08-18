@@ -5,7 +5,7 @@
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{Corn, levels::{LEVELS, LEVEL_COUNT}};
+use crate::world::{Corn, levels::{LEVELS, LEVEL_COUNT}, lights::ShowLights};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
@@ -123,6 +123,7 @@ fn compute_score(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut score: ResMut<GameScore>,
     current_level: Res<CurrentLevel>,
+    mut lights: EventWriter<ShowLights>,
 ) {
     if !event.is_empty() {
         // Use a static table with enough space for all grid
@@ -134,7 +135,7 @@ fn compute_score(
         score.mistakes = 0;
         score.forgotten = 0;
         for (y, line) in LEVELS[current_level.idx].data.lines().enumerate() {
-            println!("line {} is {:?}", y, line);
+            debug!("line {} is {:?}", y, line);
             for (x, char) in line.chars().enumerate() {
                 if char == '0' {
                     if field_map[x][y] == 1 {
@@ -162,6 +163,10 @@ fn compute_score(
                     }
                 }
             }
+        }
+
+        if score.mistakes == 0 {
+            lights.send_default();
         }
 
         info!("Score: {} forgotten, {} mistakes", score.forgotten, score.mistakes);

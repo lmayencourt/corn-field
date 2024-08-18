@@ -213,15 +213,15 @@ fn setup(
                 }),
             ));
             parent.spawn((TextBundle::from_sections([
-                TextSection::new("Press ".to_string(), text_style.clone()),
+                TextSection::new(" ".to_string(), text_style.clone()),
                 TextSection::new(
-                    "any arrows".to_string(),
+                    "CornField".to_string(),
                     TextStyle {
                         color: YELLOW.into(),
                         ..text_style.clone()
                     },
                 ),
-                TextSection::new(" to start".to_string(), text_style),
+                TextSection::new("".to_string(), text_style),
             ])
 
             .with_text_justify(JustifyText::Center)
