@@ -59,6 +59,7 @@ fn manage_menu(
     mut restart: EventWriter<RestartGame>,
     mut old_input: ResMut<PreviousKeyboardInput>,
     mut current_level: ResMut<CurrentLevel>,
+    mut score: ResMut<GameScore>,
 )
 {
     match state.get() {
@@ -78,17 +79,24 @@ fn manage_menu(
             next_state.set(GameState::Score);
         }
         GameState::Score => {
-            if current_level.idx == LEVEL_COUNT -1 {
+            let mut passed_level = false;
+            if score.mistakes <= LEVELS[current_level.idx].mistake_level && score.forgotten <= LEVELS[current_level.idx].forgotten_level {
+                passed_level = true;
+            }
+            if current_level.idx == LEVEL_COUNT - 1 && passed_level {
                 next_state.set(GameState::GameOver);
             } else {
                 if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
                     restart.send_default();
                     old_input.previous_key = Some(KeyCode::Enter);
                     if current_level.idx < LEVEL_COUNT-1 {
-                        current_level.idx += 1;
-                        next_state.set(GameState::LandingScreen);
+                        if passed_level {
+                            current_level.idx += 1;
+                        }
 
                     } 
+                    next_state.set(GameState::LandingScreen);
+
                 }
             }
         }
