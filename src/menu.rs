@@ -66,6 +66,12 @@ fn manage_menu(
                 old_input.previous_key = Some(KeyCode::Enter);
             }
         }
+        GameState::InGameLvl2 => {
+            if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
+                next_state.set(GameState::EndGame);
+                old_input.previous_key = Some(KeyCode::Enter);
+            }
+        }
         GameState::EndGame => {
             event.send_default();
             next_state.set(GameState::Score);
@@ -73,7 +79,7 @@ fn manage_menu(
         GameState::Score => {
             if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
                 restart.send_default();
-                next_state.set(GameState::InGame);
+                next_state.set(GameState::InGameLvl2);
                 old_input.previous_key = Some(KeyCode::Enter);
             }
         }
