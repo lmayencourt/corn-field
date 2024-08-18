@@ -24,7 +24,6 @@ use sky::SkyPlugin;
 enum GameState {
     LandingScreen,
     InGame,
-    InGameLvl2,
     EndGame,
     Score,
 }

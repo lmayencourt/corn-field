@@ -5,7 +5,7 @@
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{Corn, levels::LEVELS};
+use crate::world::{Corn, levels::{LEVELS, LEVEL_COUNT}};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
@@ -58,6 +58,7 @@ fn manage_menu(
     mut event: EventWriter<ComputeScoreEvent>,
     mut restart: EventWriter<RestartGame>,
     mut old_input: ResMut<PreviousKeyboardInput>,
+    mut current_level: ResMut<CurrentLevel>,
 )
 {
     match state.get() {
@@ -72,12 +73,6 @@ fn manage_menu(
                 old_input.previous_key = Some(KeyCode::Enter);
             }
         }
-        GameState::InGameLvl2 => {
-            if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
-                next_state.set(GameState::EndGame);
-                old_input.previous_key = Some(KeyCode::Enter);
-            }
-        }
         GameState::EndGame => {
             event.send_default();
             next_state.set(GameState::Score);
@@ -85,8 +80,13 @@ fn manage_menu(
         GameState::Score => {
             if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
                 restart.send_default();
-                next_state.set(GameState::InGameLvl2);
+                next_state.set(GameState::LandingScreen);
                 old_input.previous_key = Some(KeyCode::Enter);
+                if current_level.idx < LEVEL_COUNT-1 {
+                    current_level.idx += 1;
+                } else {
+                    current_level.idx = 0;
+                }
             }
         }
     }

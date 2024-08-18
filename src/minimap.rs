@@ -1,19 +1,17 @@
 use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY, YELLOW}, prelude::*};
 
 use crate::GameState;
-
+use crate::world::levels::LEVELS;
+use crate::menu::CurrentLevel;
 
 pub struct MinimapPlugin;
 
 #[derive(Component)]
 pub struct TextIntro;
 
-// If you add minimap1 component you cannot add minimap2 component
+// If you add minimap component you cannot add minimap2 component
 #[derive(Component)]
-pub struct Minimap1;
-
-#[derive(Component)]
-pub struct Minimap2;
+pub struct Minimap;
 
 impl Plugin for MinimapPlugin {
     fn build(&self, app: &mut App) {
@@ -30,23 +28,25 @@ fn update_text(mut query: Query<&mut Visibility, With<TextIntro>>, state: Res<St
     }
 }
 
-fn update_minimap(mut query: Query<&mut Visibility, (With<Minimap1>, Without<Minimap2>)>, mut query2: Query<&mut Visibility, (With<Minimap2>, Without<Minimap1>)>,state: Res<State<GameState>>) {
-    if *state.get() == GameState::InGameLvl2 {
-        let mut visible1 = query.single_mut();
-        *visible1 = Visibility::Hidden;
-        let mut visible2 = query2.single_mut();
-        *visible2 = Visibility::Visible;
-    }
+fn update_minimap(
+    asset_server: Res<AssetServer>,
+    mut query: Query<&mut UiImage, With<Minimap>>,
+    current_level: ResMut<CurrentLevel>,
+) {
+    let mut image = query.single_mut();
+    let texture_handle = asset_server.load(LEVELS[current_level.idx].image);
+
+    *image = UiImage::new(texture_handle);
 }
 
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    current_level: ResMut<CurrentLevel>,
 ) {
     let text_style = TextStyle::default();
 
-    let texture_handle = asset_server.load("crop_lvl1_17.png");
-    let texture_handle2 = asset_server.load("crop_lvl2_33.png");
+    let texture_handle = asset_server.load(LEVELS[current_level.idx].image);
 
     // root node
     commands
@@ -77,24 +77,7 @@ fn setup(
                     background_color: BackgroundColor(ANTIQUE_WHITE.into()),
                     ..default()
                 },
-                Minimap1 {},
-                Outline::new(Val::Px(5.0), Val::ZERO, GRAY.into()),
-            ));
-            parent.spawn((
-                ImageBundle {
-                    style: Style {
-                        width: Val::Px(164.),
-                        height: Val::Px(164.),
-                        position_type: PositionType::Absolute,
-                        
-                        ..default()
-                    },
-                    visibility: Visibility::Hidden,
-                    image: UiImage::new(texture_handle2),
-                    background_color: BackgroundColor(ANTIQUE_WHITE.into()),
-                    ..default()
-                },
-                Minimap2 {},
+                Minimap,
                 Outline::new(Val::Px(5.0), Val::ZERO, GRAY.into()),
             ));
             parent.spawn((

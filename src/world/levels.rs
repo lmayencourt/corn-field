@@ -2,19 +2,24 @@
  * Copyright (c) 2024 Elieva Pignat, Florian Depraz, Louis Mayencourt
  */
 
+pub const LEVEL_COUNT: usize = 2;
+
 pub struct Level<'a>{
     pub grid_size: usize,
     pub data: &'a str,
+    pub image: &'a str,
 }
 
-pub const LEVELS: [Level; 2] = [
+pub const LEVELS: [Level; LEVEL_COUNT] = [
     Level{
         grid_size: 17,
         data: LEVEL_1,
+        image: "crop_lvl1_17.png",
     },
     Level{
         grid_size: 33,
         data: LEVEL_2,
+        image: "crop_lvl2_33.png",
     }
 ];
 
