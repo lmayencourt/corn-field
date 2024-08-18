@@ -1,10 +1,12 @@
-use bevy::{color::palettes::css::{ANTIQUE_WHITE, WHITE, GRAY, YELLOW}, prelude::*};
+use bevy::{
+    color::palettes::css::{ANTIQUE_WHITE, GRAY, WHITE, YELLOW},
+    prelude::*,
+};
 
-use crate::GameState;
-use crate::world::levels::LEVELS;
 use crate::menu::CurrentLevel;
 use crate::menu::GameScore;
-
+use crate::world::levels::LEVELS;
+use crate::GameState;
 
 pub struct MinimapPlugin;
 
@@ -15,6 +17,7 @@ pub struct TextLabel {
 
 const LABEL_INTRO: i32 = 0;
 const LABEL_SCORE: i32 = 1;
+const LABEL_LEVEL: i32 = 2;
 
 // If you add minimap component you cannot add minimap2 component
 #[derive(Component)]
@@ -28,11 +31,20 @@ impl Plugin for MinimapPlugin {
     }
 }
 
-fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state: Res<State<GameState>>, score: ResMut<GameScore>,) {
-    let textMistakes = score.mistakes.to_string();
-    let textForgotten = score.forgotten.to_string();
+fn update_text(
+    mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,
+    state: Res<State<GameState>>,
+    score: ResMut<GameScore>,
+    current_level: ResMut<CurrentLevel>,
+) {
+    let level_size = LEVELS[current_level.idx].grid_size as f32;
 
     for (mut visible, label, mut text) in query.iter_mut() {
+        if label.label == LABEL_LEVEL {
+            text.sections[1].value = (current_level.idx + 1).to_string().clone();
+            text.sections[3].value = level_size.to_string().clone();
+            text.sections[5].value = level_size.to_string().clone();
+        }
         if label.label == LABEL_SCORE {
             *visible = Visibility::Hidden;
         }
@@ -40,21 +52,19 @@ fn update_text( mut query: Query<(&mut Visibility, &TextLabel, &mut Text)>,state
             if label.label == LABEL_INTRO {
                 *visible = Visibility::Hidden;
             }
-
         }
         if *state.get() == GameState::Score {
             if label.label == LABEL_SCORE {
                 *visible = Visibility::Visible;
-                text.sections[2].value = textMistakes.clone();
-                text.sections[4].value = textForgotten.clone();
+                text.sections[2].value = score.mistakes.to_string().clone();
+                text.sections[4].value = score.forgotten.to_string().clone();
             }
-
         }
         if *state.get() == GameState::EndGame {
             if label.label == LABEL_SCORE {
                 *visible = Visibility::Visible;
-                text.sections[2].value = textMistakes.clone();
-                text.sections[4].value = textForgotten.clone();
+                text.sections[2].value = score.mistakes.to_string().clone();
+                text.sections[4].value = score.forgotten.to_string().clone();
             }
         }
     }
@@ -115,26 +125,7 @@ fn setup(
             parent.spawn((
                 TextBundle::from_section(
                     // Accepts a `String` or any type that converts into a `String`, such as `&str`
-                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.",
-                    TextStyle {
-                        color: WHITE.into(),
-                        font_size: 24.0,
-                        ..default()
-                    },
-                ) // Set the justification of the Text
-                .with_text_justify(JustifyText::Left)
-                // Set the style of the TextBundle itself.
-                .with_style(Style {
-                    position_type: PositionType::Absolute,
-                    top: Val::Px(5.0),
-                    left: Val::Px(200.0),
-                    ..default()
-                }),
-            ));
-            parent.spawn((
-                TextBundle::from_section(
-                    // Accepts a `String` or any type that converts into a `String`, such as `&str`
-                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.",
+                    "> We have an urgent situation on Earth.\n> No time to explain!\n> I need you to create the crop circle in sector 42.",
                     TextStyle {
                         color: WHITE.into(),
                         font_size: 24.0,
@@ -232,14 +223,14 @@ fn setup(
                 ),
             ])
 
-            .with_text_justify(JustifyText::Right)
+            .with_text_justify(JustifyText::Left)
             // Set the style of the TextBundle itself.
             .with_style(Style {
                 position_type: PositionType::Absolute,
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
                 top: Val::Px(20.0),
-                right: Val::Px(200.0),
+                left: Val::Px(1000.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
                 ..default()
@@ -248,5 +239,63 @@ fn setup(
                 label: LABEL_SCORE,
             },
         ));
+        parent.spawn((TextBundle::from_sections([
+            TextSection::new(
+                "Level ".to_string(),
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+            TextSection::from_style(
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+            TextSection::new(
+                ": ".to_string(),
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+            TextSection::from_style(
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+            TextSection::new(
+                "x".to_string(),
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+            TextSection::from_style(
+                TextStyle {
+                    color: WHITE.into(),
+                    ..default()
+                },
+            ),
+        ])
+
+        .with_text_justify(JustifyText::Left)
+        // Set the style of the TextBundle itself.
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            top: Val::Px(180.0),
+            left: Val::Px(5.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            ..default()
+        }),
+        TextLabel {
+            label: LABEL_LEVEL,
+        },
+    ));
           });
 }
