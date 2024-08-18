@@ -6,32 +6,47 @@ use crate::GameState;
 pub struct MinimapPlugin;
 
 #[derive(Component)]
-pub struct Minimap;
+pub struct TextIntro;
+
+// If you add minimap1 component you cannot add minimap2 component
+#[derive(Component)]
+pub struct Minimap1;
+
+#[derive(Component)]
+pub struct Minimap2;
 
 impl Plugin for MinimapPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
         app.add_systems(Update, update_text);
+        app.add_systems(Update, update_minimap);
     }
 }
 
-fn update_text(mut query: Query<&mut Visibility, With<Minimap>>, state: Res<State<GameState>>) {
+fn update_text(mut query: Query<&mut Visibility, With<TextIntro>>, state: Res<State<GameState>>) {
     if *state.get() != GameState::LandingScreen {
         let mut visible = query.single_mut();
         *visible = Visibility::Hidden;
     }
 }
 
+fn update_minimap(mut query: Query<&mut Visibility, (With<Minimap1>, Without<Minimap2>)>, mut query2: Query<&mut Visibility, (With<Minimap2>, Without<Minimap1>)>,state: Res<State<GameState>>) {
+    if *state.get() == GameState::InGameLvl2 {
+        let mut visible1 = query.single_mut();
+        *visible1 = Visibility::Hidden;
+        let mut visible2 = query2.single_mut();
+        *visible2 = Visibility::Visible;
+    }
+}
+
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     let text_style = TextStyle::default();
 
     let texture_handle = asset_server.load("crop_lvl1_17.png");
-    let texture_atlas = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 1, None, None);
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
+    let texture_handle2 = asset_server.load("crop_lvl2_33.png");
 
     // root node
     commands
@@ -63,8 +78,45 @@ fn setup(
                     background_color: BackgroundColor(ANTIQUE_WHITE.into()),
                     ..default()
                 },
-                TextureAtlas::from(texture_atlas_handle),
+                Minimap1 {},
                 Outline::new(Val::Px(5.0), Val::ZERO, GRAY.into()),
+            ));
+            parent.spawn((
+                ImageBundle {
+                    transform: Transform::from_rotation(Quat::from_rotation_z((270.0_f32).to_radians())),
+                    style: Style {
+                        width: Val::Px(164.),
+                        height: Val::Px(164.),
+                        position_type: PositionType::Absolute,
+                        
+                        ..default()
+                    },
+                    visibility: Visibility::Hidden,
+                    image: UiImage::new(texture_handle2),
+                    background_color: BackgroundColor(ANTIQUE_WHITE.into()),
+                    ..default()
+                },
+                Minimap2 {},
+                Outline::new(Val::Px(5.0), Val::ZERO, GRAY.into()),
+            ));
+            parent.spawn((
+                TextBundle::from_section(
+                    // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                    "> We have an urgent situation on Earth.\n> I need you to create the crop circle in sector 42.",
+                    TextStyle {
+                        color: WHITE.into(),
+                        font_size: 24.0,
+                        ..default()
+                    },
+                ) // Set the justification of the Text
+                .with_text_justify(JustifyText::Left)
+                // Set the style of the TextBundle itself.
+                .with_style(Style {
+                    position_type: PositionType::Absolute,
+                    top: Val::Px(5.0),
+                    left: Val::Px(200.0),
+                    ..default()
+                }),
             ));
             parent.spawn((
                 TextBundle::from_section(
@@ -90,7 +142,7 @@ fn setup(
                     // Accepts a `String` or any type that converts into a `String`, such as `&str`
                     "Arrows:      Move\nSpacebar:    Cut the plants\nEnter:       Finish the mission",
                     TextStyle {
-                        color: YELLOW.into(),
+                        color: WHITE.into(),
                         font_size: 24.0,
                         ..default()
                     },
@@ -127,9 +179,7 @@ fn setup(
                 align_items: AlignItems::Center,
                 ..default()
             }),
-            Minimap {
-
-            }
+            TextIntro {}
             )
             );
         });
