@@ -5,7 +5,7 @@
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{Corn, GRID_SIZE, levels::LEVELS};
+use crate::world::{Corn, levels::LEVELS};
 
 /// Global resource that contains the score of the game
 #[derive(Resource, Default)]
@@ -31,6 +31,11 @@ struct PreviousKeyboardInput {
     previous_key: Option<KeyCode>,
 }
 
+#[derive(Resource, Default)]
+pub struct CurrentLevel {
+    pub idx: usize,
+}
+
 pub struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
@@ -42,6 +47,7 @@ impl Plugin for MenuPlugin {
         app.insert_resource(GameScore::default());
         app.add_event::<RestartGame>();
         app.add_systems(Update, restart_all);
+        app.insert_resource(CurrentLevel::default());
     }
 }
 
@@ -97,17 +103,18 @@ fn compute_score(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut score: ResMut<GameScore>,
+    current_level: Res<CurrentLevel>,
 ) {
     if !event.is_empty() {
-        let mut field_map = [[0; GRID_SIZE as usize]; GRID_SIZE as usize];
+        // Use a static table with enough space for all grid
+        let mut field_map = [[0; 33 as usize]; 33 as usize];
         for corn_position in corn.iter() {
             field_map[corn_position.translation.x as usize][corn_position.translation.z as usize] = 1;
         }
 
         score.mistakes = 0;
         score.forgotten = 0;
-        let level_size = LEVELS[0].grid_size;
-        for (y, line) in LEVELS[0].data.lines().enumerate() {
+        for (y, line) in LEVELS[current_level.idx].data.lines().enumerate() {
             println!("line {} is {:?}", y, line);
             for (x, char) in line.chars().enumerate() {
                 if char == '0' {

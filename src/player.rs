@@ -3,8 +3,8 @@ use std::f32::consts::PI;
 use bevy::prelude::*;
 
 use crate::GameState;
-use crate::world::{GRID_SIZE, Corn};
-use crate::menu::RestartGame;
+use crate::world::{Corn, levels::LEVELS};
+use crate::menu::{RestartGame, CurrentLevel};
 
 #[derive(Default)]
 pub struct PlayerPlugin;
@@ -62,7 +62,9 @@ fn move_player(
     mut query: Query<(&mut Transform, &mut Player)>,
     time: Res<Time>,
     state: Res<State<GameState>>,
+    current_level: Res<CurrentLevel>,
 ) {
+    let level_size = LEVELS[current_level.idx].grid_size as f32;
     let (mut tt, mut player) = query.single_mut();
     // Access the x, y, z coordinates
     let mut x = tt.translation.x;
@@ -74,7 +76,7 @@ fn move_player(
             let mut moved = false;
 
             if keyboard_input.pressed(KeyCode::ArrowUp) {
-                if z < GRID_SIZE - 1.0 {
+                if z < level_size - 1.0 {
                     z += 1.0;
                 }
                 rotation = PI;
@@ -90,7 +92,7 @@ fn move_player(
             }
 
             if keyboard_input.pressed(KeyCode::ArrowLeft) {
-                if x < GRID_SIZE - 1.0 {
+                if x < level_size - 1.0 {
                     x += 1.0;
                 }
                 rotation = -PI / 2.;

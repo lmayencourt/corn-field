@@ -7,14 +7,13 @@ use std::isize;
 use bevy::prelude::*;
 use rand::Rng; // 0.8.5
 
-use crate::menu::RestartGame;
+use crate::menu::{RestartGame, CurrentLevel};
+use crate::world::levels::LEVELS;
 
 pub mod levels;
 
 /// Size of the world and game grid
 pub const WORLD_OFFSET_OF_GRID: f32 = 5.0;
-pub const GRID_SIZE: f32 = 17.0;
-pub const WORLD_SIZE: f32 = GRID_SIZE + 2.0 * WORLD_OFFSET_OF_GRID;
 
 pub const YELLOW: Color = Color::srgb(234.0 / 255.0, 189.0 / 255.0, 71.0 / 255.0);
 pub const MILESTONE_COLOR: Color = Color::srgb(155.0/255.0, 34.0/255.0, 38.0/255.0);
@@ -39,9 +38,10 @@ fn setup_world(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    current_level: Res<CurrentLevel>,
 ) {
-
-    let FLOOR_SIZE = GRID_SIZE + WORLD_OFFSET_OF_GRID;
+    let level_size = LEVELS[current_level.idx].grid_size as f32;
+    let FLOOR_SIZE = level_size + WORLD_OFFSET_OF_GRID;
     let WORLD_OFFSET_OF_GRID2 = -WORLD_OFFSET_OF_GRID as isize;
     // This is the floor of the game, adding 2 tiles of margin
     for x in WORLD_OFFSET_OF_GRID2..FLOOR_SIZE  as isize {
@@ -49,7 +49,7 @@ fn setup_world(
 
             let num = rand::thread_rng().gen_range(0.0..0.10);
 
-            if (x < 0) || (z < 0) || (z >= GRID_SIZE as isize) || (x >= GRID_SIZE as isize)
+            if (x < 0) || (z < 0) || (z >= level_size as isize) || (x >= level_size as isize)
             {
                 commands.spawn((
                     PbrBundle {
@@ -86,18 +86,18 @@ fn setup_world(
     commands.spawn(PbrBundle {
         mesh: meshes.add(Cuboid::new(0.2, 1.0, 0.2)),
         material: materials.add(SCALE_COLOR),
-        transform: Transform::from_xyz((GRID_SIZE - 1.0) / 2.0, 1.0, -1.0),
+        transform: Transform::from_xyz((level_size - 1.0) / 2.0, 1.0, -1.0),
         ..default()
     });
 
     commands.spawn(PbrBundle {
         mesh: meshes.add(Cuboid::new(0.2, 1.0, 0.2)),
         material: materials.add(SCALE_COLOR),
-        transform: Transform::from_xyz(-1.0, 1.0, (GRID_SIZE - 1.0) / 2.0),
+        transform: Transform::from_xyz(-1.0, 1.0, (level_size - 1.0) / 2.0),
         ..default()
     });
 
-    spawn_board(commands, meshes, materials);
+    spawn_board(commands, meshes, materials, current_level);
 }
 
 fn reset_world(
@@ -106,13 +106,13 @@ fn reset_world(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     corns: Query<Entity, With<Corn>>,
-
+    current_level: Res<CurrentLevel>,
 ) {
     if !event.is_empty() {
         for corn in corns.iter() {
             commands.entity(corn).despawn();
         }
-        spawn_board(commands, meshes, materials);
+        spawn_board(commands, meshes, materials, current_level);
     }
 }
 
@@ -120,10 +120,12 @@ fn spawn_board(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    current_level: Res<CurrentLevel>,
 ) {
+    let level_size = LEVELS[current_level.idx].grid_size as f32;
     // We need apparently to work on the X - Z plane, Y being the height for us.
-    for x in 0..GRID_SIZE as usize {
-        for z in 0..GRID_SIZE as usize {
+    for x in 0..level_size as usize {
+        for z in 0..level_size as usize {
 
             let num = rand::thread_rng().gen_range(0.45..0.55);
 
