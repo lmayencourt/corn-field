@@ -10,7 +10,7 @@ impl Plugin for AudioPlugin {
 
 fn setup_sound(asset_server: Res<AssetServer>, mut commands: Commands) {
     commands.spawn(AudioBundle {
-        source: asset_server.load("sounds/game.ogg"),
+        source: asset_server.load("embedded://sounds/game.ogg"),
         settings: PlaybackSettings {
             mode: bevy::audio::PlaybackMode::Loop,
             ..default()

@@ -17,28 +17,28 @@ pub const LEVELS: [Level; LEVEL_COUNT] = [
     Level{
         grid_size: 11,
         data: LEVEL_1,
-        image: "crop_lvl0_11.png",
+        image: "embedded://crop_lvl0_11.png",
         mistake_level: 5,
         forgotten_level: 5,
     },
     Level{
         grid_size: 17,
         data: LEVEL_2,
-        image: "crop_lvl1_17.png",
+        image: "embedded://crop_lvl1_17.png",
         mistake_level: 8,
         forgotten_level: 8, 
     },
     Level{
         grid_size: 33,
         data: LEVEL_3,
-        image: "crop_lvl2_33.png",
+        image: "embedded://crop_lvl2_33.png",
         mistake_level: 18,
         forgotten_level: 18,
     },
     Level{
         grid_size: 33,
         data: LEVEL_4,
-        image: "crop_lvl3_33.png",
+        image: "embedded://crop_lvl3_33.png",
         mistake_level: 30,
         forgotten_level: 30,
     }

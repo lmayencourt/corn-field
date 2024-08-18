@@ -37,7 +37,7 @@ fn setup_player(
         SceneBundle {
             transform: Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(2.0)),
             scene: asset_server
-                .load(GltfAssetLabel::Scene(0).from_asset("models/alien.glb")),
+                .load(GltfAssetLabel::Scene(0).from_asset("embedded://models/alien.glb")),
             ..default()
         },
         Player {
