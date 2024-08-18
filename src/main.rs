@@ -26,6 +26,7 @@ enum GameState {
     InGame,
     EndGame,
     Score,
+    GameOver,
 }
 
 fn main() {

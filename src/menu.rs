@@ -78,15 +78,26 @@ fn manage_menu(
             next_state.set(GameState::Score);
         }
         GameState::Score => {
+            if current_level.idx == LEVEL_COUNT -1 {
+                next_state.set(GameState::GameOver);
+            } else {
+                if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
+                    restart.send_default();
+                    old_input.previous_key = Some(KeyCode::Enter);
+                    if current_level.idx < LEVEL_COUNT-1 {
+                        current_level.idx += 1;
+                        next_state.set(GameState::LandingScreen);
+
+                    } 
+                }
+            }
+        }
+        GameState::GameOver => {
             if keyboard_input.pressed(KeyCode::Enter) && old_input.previous_key.is_none(){
-                restart.send_default();
                 next_state.set(GameState::LandingScreen);
                 old_input.previous_key = Some(KeyCode::Enter);
-                if current_level.idx < LEVEL_COUNT-1 {
-                    current_level.idx += 1;
-                } else {
-                    current_level.idx = 0;
-                }
+                restart.send_default();
+                current_level.idx = 0;
             }
         }
     }

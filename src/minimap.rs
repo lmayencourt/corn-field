@@ -21,6 +21,7 @@ const LABEL_INTRO: i32 = 0;
 const LABEL_SCORE: i32 = 1;
 const LABEL_LEVEL: i32 = 2;
 const LABEL_INDIC: i32 = 3;
+const LABEL_OVER: i32 = 4;
 
 // If you add minimap component you cannot add minimap2 component
 #[derive(Component)]
@@ -51,6 +52,9 @@ fn update_text(
         if label.label == LABEL_SCORE {
             *visible = Visibility::Hidden;
         }
+        if label.label == LABEL_OVER {
+            *visible = Visibility::Hidden;
+        }
 
         if *state.get() != GameState::LandingScreen {
             if label.label == LABEL_INTRO {
@@ -58,7 +62,7 @@ fn update_text(
             }
         }
 
-        if *state.get() == GameState::LandingScreen {
+        if *state.get() == GameState::LandingScreen && current_level.idx == 0 {
             if label.label == LABEL_INDIC {
                 text.sections[0].value = "> We have an urgent situation on Earth.\n> No time to explain!\n> I need you to create the crop circle in sector 42.".to_string();
             }
@@ -76,7 +80,7 @@ fn update_text(
             }
         }
 
-        if *state.get() == GameState::Score {
+        if *state.get() == GameState::Score  || *state.get() == GameState::EndGame || *state.get() == GameState::GameOver{
             if label.label == LABEL_SCORE {
                 *visible = Visibility::Visible;
                 text.sections[2].value = score.mistakes.to_string().clone();
@@ -90,11 +94,9 @@ fn update_text(
                 }
             }
         }
-        if *state.get() == GameState::EndGame {
-            if label.label == LABEL_SCORE {
+        if *state.get() == GameState::GameOver {
+            if label.label == LABEL_OVER  {
                 *visible = Visibility::Visible;
-                text.sections[2].value = score.mistakes.to_string().clone();
-                text.sections[4].value = score.forgotten.to_string().clone();
             }
         }
     }
@@ -330,6 +332,42 @@ fn setup(
         TextLabel {
             label: LABEL_LEVEL,
         },
+
     ));
+    parent.spawn((TextBundle::from_sections([
+        TextSection::new(
+            "GAME OVER\n".to_string(),
+            TextStyle {
+                color: WHITE.into(),
+                font_size: 60.0,
+                ..default()
+            },
+        ),
+        TextSection::new(
+            "Thanks for playing!\nPress enter to start again".to_string(),
+            TextStyle {
+                color: WHITE.into(),
+                font_size: 20.0,
+                ..default()
+            },
+        ),
+    ])
+
+    .with_text_justify(JustifyText::Center)
+    // Set the style of the TextBundle itself.
+    .with_style(Style {
+        position_type: PositionType::Absolute,
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        top: Val::Px(250.0),
+        left: Val::Px(60.0),
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        ..default()
+    }),
+    TextLabel {
+        label: LABEL_OVER,
+    },
+));
           });
 }
